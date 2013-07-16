@@ -1,5 +1,6 @@
 var Autocomplete = (function () {
   function Autocomplete(el, options) {
+    var self = this;
     this.el = el;
     this.options = {};
 
@@ -8,7 +9,9 @@ var Autocomplete = (function () {
     this.options.resultsLimit = options.resultsLimit || 10;
 
     this.source = options.source.debounce(this.options.delay);
-    this.onAutocompleteEnd = onAutocompleteEnd.bind(this);
+    this.onAutocompleteEnd = function(results) {
+      onAutocompleteEnd.call(self, results);  
+    }
 
     this.init();
   };
