@@ -1,5 +1,5 @@
 # vanilla-autocomplete #
-a simple autocomplete demo without client side dependencies.
+a simple ajax-driven autocomplete demo without client side dependencies.
 
 # usage #
 1. `node server.js`
