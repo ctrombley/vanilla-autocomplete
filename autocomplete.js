@@ -7,14 +7,45 @@ var Autocomplete = (function () {
     this.options.delay = options.delay || 100;
     this.options.resultsLimit = options.resultsLimit || 10;
 
-    this.autocomplete = options.source.debounce(this.options.delay);
+    this.source = options.source.debounce(this.options.delay);
     this.onAutocompleteEnd = onAutocompleteEnd.bind(this);
 
-    init.call(this);
+    this.init();
+  };
+
+  Autocomplete.prototype.init = function () {
+    var self = this;
+    this.el.setAttribute('autocomplete', 'off');
+    this.el.addEventListener('keyup', function (e) {
+      if (e.keyCode == 38) { // up
+        return false; 
+      }
+      if (e.keyCode == 40) { // down
+        return false; 
+      }
+
+      self.doAutocomplete();
+    });
+  };
+
+  Autocomplete.prototype.doAutocomplete = function () {
+    if (this.el.value.length < this.options.chars) {
+      this.removeResults();
+      return;
+    }
+
+    this.source(this.el.value, this.onAutocompleteEnd);
+  };
+
+  Autocomplete.prototype.removeResults = function() {
+    if (this.resultsNode !== undefined && this.resultsNode !== null) {
+      this.el.parentNode.removeChild(this.resultsNode);
+      this.resultsNode = undefined;
+    }
   };
 
   var onAutocompleteEnd = function (results) {
-    removeResults.call(this);
+    this.removeResults();
 
     if (results.length === 0)
       return false;
@@ -34,30 +65,6 @@ var Autocomplete = (function () {
 
     this.resultsNode = resultsNode;
     this.el.parentNode.insertBefore(resultsNode, search.nextSibling);
-  };
-
-  var removeResults = function() {
-    if (this.resultsNode !== undefined && this.resultsNode !== null) {
-      this.el.parentNode.removeChild(this.resultsNode);
-      this.resultsNode = undefined;
-    }
-  }
-
-  var init = function () {
-    var self = this;
-
-    this.el.setAttribute('autocomplete', 'off');
-    this.el.addEventListener('keyup', function (e) {
-      if (e.keyCode == 38) { } // up
-      if (e.keyCode == 40) { } // down
-
-      if (self.el.value.length < self.options.chars) {
-        removeResults.call(self);
-        return;
-      }
-
-      self.autocomplete(self.el.value, self.onAutocompleteEnd);
-    });
   };
 
   return Autocomplete;
