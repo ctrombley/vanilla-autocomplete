@@ -1,3 +1,5 @@
+/*globals Autocomplete */
+
 (function (Autocomplete) {
 	var search = document.getElementById('search');
 
@@ -5,12 +7,12 @@
 		var ac = new Autocomplete(search, {
 			chars: 2,
 			source: autocompleteSource
-		}); 
-	}
+		});
+	};
 
 	var autocompleteSource = function (searchTerm, callback) {
 		var xhr = new XMLHttpRequest();
-		xhr.onload = function(e) {
+		xhr.onload = function (e) {
 			var resultsArray = JSON.parse(e.target.response);
 			callback(resultsArray);
 		};
